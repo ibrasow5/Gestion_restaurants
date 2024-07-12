@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Restaurants SYSTEM "exo7.dtd">
+<Restaurants devise="EUR">
+    <Restaurant>
+        <Nom>Le Gourmet</Nom>
+        <Adresse>123 Rue de la Paix, Paris</Adresse>
+        <Restaurateur>Jean Dupont</Restaurateur>
+        <Description>
+            <Paragraphe>
+                <Texte>Bienvenue à Le Gourmet, où chaque plat est une œuvre d'art culinaire.</Texte>
+                <Important>Notre spécialité est la cuisine française moderne.</Important>
+                <Liste type="unordered">
+                    <Item>Ambiance cosy</Item>
+                    <Item>Service impeccable</Item>
+                </Liste>
+                <Image url="https://www.le-gourmet-restaurant.fr/upload/restaurant2.jpg" position="right"/>
+            </Paragraphe>
+        </Description>
+        <Carte>
+            <Plat>
+                <Nom>Foie Gras</Nom>
+                <Type>Entrée</Type>
+                <Prix>25.50</Prix>
+                <Description>Délicieux foie gras accompagné de toasts croustillants.</Description>
+            </Plat>
+            <Plat>
+                <Nom>Magret de Canard</Nom>
+                <Type>Plat</Type>
+                <Prix>35.00</Prix>
+                <Description>Magret de canard grillé avec une sauce aux fruits rouges.</Description>
+            </Plat>
+        </Carte>
+        <Menus>
+            <Menu>
+                <Titre>Menu Dégustation</Titre>
+                <Description>Un voyage gastronomique à travers nos spécialités.</Description>
+                <Prix>75.00</Prix>
+                <Elements>
+                    <Element>Foie Gras</Element>
+                    <Element>Magret de Canard</Element>
+                </Elements>
+            </Menu>
+        </Menus>
+    </Restaurant>
+    <Restaurant>
+        <Nom>La Bella Italia</Nom>
+        <Adresse>456 Via Roma, Milan</Adresse>
+        <Restaurateur>Mario Rossi</Restaurateur>
+        <Description>
+            <Paragraphe>
+                <Texte>Découvrez les saveurs authentiques de l'Italie à La Bella Italia.</Texte>
+                <Important>Nos pâtes sont faites maison chaque jour.</Important>
+                <Liste type="ordered">
+                    <Item>Accueil chaleureux</Item>
+                    <Item>Recettes traditionnelles</Item>
+                </Liste>
+                <Image url="https://res.cloudinary.com/tf-lab/image/upload/w_600,h_310,c_fill,g_auto:subject,q_auto,f_auto/restaurant/ce30a599-68ef-4e82-b885-3ef1c2eb236e/b6ebf833-5298-4c09-8073-ebe5f0653248.jpg" position="right"/>
+            </Paragraphe>
+        </Description>
+        <Carte>
+            <Plat>
+                <Nom>Bruschetta</Nom>
+                <Type>Entrée</Type>
+                <Prix>10.00</Prix>
+                <Description>Bruschetta avec tomates fraîches et basilic.</Description>
+            </Plat>
+            <Plat>
+                <Nom>Lasagne</Nom>
+                <Type>Plat</Type>
+                <Prix>20.00</Prix>
+                <Description>Lasagne traditionnelle à la bolognaise.</Description>
+            </Plat>
+        </Carte>
+        <Menus>
+            <Menu>
+                <Titre>Menu Italien</Titre>
+                <Description>Profitez de nos meilleurs plats dans ce menu complet.</Description>
+                <Prix>40.00</Prix>
+                <Elements>
+                    <Element>Bruschetta</Element>
+                    <Element>Lasagne</Element>
+                </Elements>
+            </Menu>
+        </Menus>
+    </Restaurant>
+    <Restaurant>
+        <Nom>Sushi Zen</Nom>
+        <Adresse>789 Tokyo Street, Tokyo</Adresse>
+        <Restaurateur>Yuki Tanaka</Restaurateur>
+        <Description>
+            <Paragraphe>
+                <Texte>Sushi Zen, où la tradition japonaise rencontre la modernité.</Texte>
+                <Important>Nos sushis sont préparés avec des ingrédients de la plus haute qualité.</Important>
+                <Liste type="unordered">
+                    <Item>Atmosphère paisible</Item>
+                    <Item>Chef primé</Item>
+                </Liste>
+                <Image url="https://media-cdn.tripadvisor.com/media/photo-s/10/44/9b/c6/sushizen-epfl.jpg" position="right"/>
+            </Paragraphe>
+        </Description>
+        <Carte>
+            <Plat>
+                <Nom>Sushi Assorti</Nom>
+                <Type>Plat</Type>
+                <Prix>30.00</Prix>
+                <Description>Assortiment de sushis variés préparés par notre chef.</Description>
+            </Plat>
+            <Plat>
+                <Nom>Tempura</Nom>
+                <Type>Plat</Type>
+                <Prix>25.00</Prix>
+                <Description>Tempura de crevettes et légumes frits.</Description>
+            </Plat>
+        </Carte>
+        <Menus>
+            <Menu>
+                <Titre>Menu Zen</Titre>
+                <Description>Une sélection de nos meilleurs plats pour une expérience inoubliable.</Description>
+                <Prix>50.00</Prix>
+                <Elements>
+                    <Element>Sushi Assorti</Element>
+                    <Element>Tempura</Element>
+                </Elements>
+            </Menu>
+        </Menus>
+    </Restaurant>
+</Restaurants>

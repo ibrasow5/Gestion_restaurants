@@ -1,0 +1,28 @@
+<!ELEMENT fiche (coordonnees, description, carte, menus?, devise)>
+<!ELEMENT coordonnees (nom, adresse, restaurateur)>
+<!ELEMENT nom (#PCDATA)>
+<!ELEMENT adresse (#PCDATA)>
+<!ELEMENT restaurateur (#PCDATA)>
+
+<!ELEMENT description (paragraphes|images|listes|important+)>
+<!ELEMENT paragraphes (#PCDATA)>
+<!ELEMENT images EMPTY>
+<!ATTLIST images url CDATA #REQUIRED position (droite|gauche|centre) #REQUIRED>
+<!ELEMENT listes (liste+)>
+<!ELEMENT liste (item+)>
+<!ELEMENT item (#PCDATA)>
+<!ELEMENT important (#PCDATA)>
+
+<!ELEMENT carte (plat+)>
+<!ELEMENT plat (partie, prix, description?)>
+<!ELEMENT partie (#PCDATA)>
+<!ELEMENT prix (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+
+<!ELEMENT menus (menu*)>
+<!ELEMENT menu (titre, description?, prix, elements)>
+<!ELEMENT titre (#PCDATA)>
+<!ELEMENT elements (element+)> <!-- Elements refers to items from the carte -->
+<!ELEMENT element (#PCDATA)>
+
+<!ELEMENT devise (#PCDATA)>
