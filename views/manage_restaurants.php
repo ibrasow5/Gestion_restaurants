@@ -247,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_restaurant'])) 
                     <td><?php echo $restaurant->Nom; ?></td>
                     <td><?php echo $restaurant->Adresse; ?></td>
                     <td><?php echo $restaurant->Restaurateur; ?></td>
-                    <td><?php echo $restaurant->Description->Paragraphe->Important->Texte; ?></td>
+                    <td><?php echo $restaurant->Description->Paragraphe->Important; ?></td>
                     <td>
                         <ul>
                             <?php foreach ($restaurant->Description->Paragraphe->Liste->Item as $caracteristique) : ?>
