@@ -18,13 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_restaurant'])) {
     $dom->formatOutput = true;
 
     $newRestaurant = $xml->addChild('Restaurant');
-    $newRestaurant->Nom = $_POST['nom'];
-    $newRestaurant->Adresse = $_POST['adresse'];
-    $newRestaurant->Restaurateur = $_POST['restaurateur'];
+    $newRestaurant->addChild('Nom', $_POST['nom']);
+    $newRestaurant->addChild('Adresse', $_POST['adresse']);
+    $newRestaurant->addChild('Restaurateur', $_POST['restaurateur']);
 
     // Ajouter la description
     $description = $newRestaurant->addChild('Description');
     $paragraphe = $description->addChild('Paragraphe');
+    $paragraphe->addChild('Texte', $_POST['description']);
 
     // Ajouter la spécialité
     $important = $paragraphe->addChild('Important');
@@ -33,8 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_restaurant'])) {
     // Ajouter les caractéristiques
     $paragraphe = $description->addChild('Paragraphe');
     $liste = $paragraphe->addChild('Liste');
-    foreach ($_POST['caracteristiques'] as $item) {
-        $liste->addChild('Item', $item);
+    $caracteristiques = explode(',', $_POST['caracteristiques']);
+    foreach ($caracteristiques as $item) {
+        $liste->addChild('Item', trim($item));
     }
 
     // Ajouter l'image avec attribut 'url'
@@ -47,10 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_restaurant'])) {
     $carte = $newRestaurant->addChild('Carte');
     foreach ($_POST['plats'] as $plat) {
         $nouveauPlat = $carte->addChild('Plat');
-        $nouveauPlat->Nom = $plat['nom'];
-        $nouveauPlat->Type = $plat['type'];
-        $nouveauPlat->Prix = $plat['prix'];
-        $nouveauPlat->Description = $plat['description'];
+        $nouveauPlat->addChild('Nom', $plat['nom']);
+        $nouveauPlat->addChild('Type', $plat['type']);
+        $nouveauPlat->addChild('Prix', $plat['prix']);
+        $nouveauPlat->addChild('Description', $plat['description']);
     }
 
     // Enregistrer le fichier XML avec un formatage lisible
@@ -64,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_restaurant'])) {
 // Supprimer un restaurant
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_restaurant'])) {
     foreach ($xml->Restaurant as $key => $restaurant) {
-        if ($restaurant->Nom == $_POST['nom']) {
+        if ((string)$restaurant->Nom == $_POST['nom']) {
             unset($xml->Restaurant[$key]);
 
             $dom = dom_import_simplexml($xml)->ownerDocument;
@@ -184,10 +186,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_restaurant'])) 
             <label for="caracteristiques">Caractéristiques (séparées par des virgules):</label>
             <input type="text" id="caracteristiques" name="caracteristiques" required>
             <label for="image_url">URL de l'image:</label>
-            <input type="text" id="image_url" name="image_url" required>
+            <input type="text" id="image_url" name="image_url">
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
             <h4>Carte des plats</h4>
-            <label for="plats">Type de plat:</label>
-            <select id="plats" name="plats[type]" required>
+            <label for="type_plat">Type de plat:</label>
+            <select id="type_plat" name="plats[0][type]" required>
                 <option value="entree">Entrée</option>
                 <option value="plat">Plat</option>
                 <option value="dessert">Dessert</option>
@@ -225,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_restaurant'])) 
                         <textarea name="plats[${numPlat - 1}][description]" required></textarea>
                     </div>
                 `;
-                divPlats.innerHTML += html;
+                divPlats.insertAdjacentHTML('beforeend', html);
             }
         </script>
     </div>
@@ -242,46 +246,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_restaurant'])) 
                 <th>Carte des plats</th>
                 <th>Action</th>
             </tr>
-            <?php foreach ($xml->Restaurant as $restaurant) : ?>
+            <?php foreach ($xml->Restaurant as $restaurant) { ?>
                 <tr>
                     <td><?php echo $restaurant->Nom; ?></td>
                     <td><?php echo $restaurant->Adresse; ?></td>
                     <td><?php echo $restaurant->Restaurateur; ?></td>
                     <td><?php echo $restaurant->Description->Paragraphe->Important; ?></td>
                     <td>
-                        <ul>
-                            <?php foreach ($restaurant->Description->Paragraphe->Liste->Item as $caracteristique) : ?>
-                                <li><?php echo $caracteristique; ?></li>
-                            <?php endforeach; ?>
-                        </ul>
+                        <?php
+                        $caracteristiques = [];
+                        foreach ($restaurant->Description->Paragraphe->Liste->Item as $item) {
+                            $caracteristiques[] = $item;
+                        }
+                        echo implode(', ', $caracteristiques);
+                        ?>
                     </td>
                     <td><?php echo $restaurant->Description->Paragraphe->Texte; ?></td>
                     <td>
-                        <img src="<?php echo $restaurant->Description->Paragraphe->Image['url']; ?>" alt="Image du restaurant" style="max-width: 100px;">
+                        <?php if (isset($restaurant->Description->Paragraphe->Image)) { ?>
+                            <img src="<?php echo $restaurant->Description->Paragraphe->Image['url']; ?>" alt="Image" width="100">
+                        <?php } else { ?>
+                            N/A
+                        <?php } ?>
                     </td>
                     <td>
-                        <ul>
-                            <?php foreach ($restaurant->Carte->Plat as $plat) : ?>
-                                <li>
-                                    <strong><?php echo ucfirst($plat->Type); ?>:</strong> <?php echo $plat->Nom; ?> - <?php echo $plat->Prix; ?> FCFA<br>
-                                    <?php echo $plat->Description; ?>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
+                        <?php foreach ($restaurant->Carte->Plat as $plat) { ?>
+                            <strong><?php echo $plat->Nom; ?></strong> (<?php echo $plat->Type; ?>): <?php echo $plat->Prix; ?> CFA<br>
+                            <em><?php echo $plat->Description; ?></em><br>
+                        <?php } ?>
                     </td>
                     <td>
-                    <form method="post" action="">
-                        <input type="hidden" name="delete_restaurant" value="1">
-                        <input type="hidden" name="nom" value="<?php echo $restaurant->Nom; ?>">
-                        <button type="submit">Supprimer</button>
-                    </form>
-                    <form method="post" action="update_restaurant.php">
-                        <input type="hidden" name="nom" value="<?php echo $restaurant->Nom; ?>">
-                        <button type="submit">Modifier</button>
-                    </form>
+                        <form method="post" action="">
+                            <input type="hidden" name="delete_restaurant" value="1">
+                            <input type="hidden" name="nom" value="<?php echo $restaurant->Nom; ?>">
+                            <button type="submit">Supprimer</button>
+                        </form>
                     </td>
                 </tr>
-            <?php endforeach; ?>
+            <?php } ?>
         </table>
+    </div>
 </body>
 </html>
