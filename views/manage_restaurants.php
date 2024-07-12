@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_restaurant'])) {
     $paragraphe->addChild('Texte', $_POST['description']);
 
     // Ajouter la spécialité
-    $important = $paragraphe->addChild('Important');
+    $important = $paragraphe->addChild('Important', $_POST['specialite']);
 
     // Ajouter les caractéristiques
     $liste = $paragraphe->addChild('Liste');
