@@ -57,12 +57,15 @@ if (isset($_POST['restaurant_id'])) {
 
         // Mettre à jour la carte des plats
         $restaurant_to_update->Carte->Plat = '';
-        foreach ($_POST['plats'] as $plat) {
-            $nouveauPlat = $restaurant_to_update->Carte->addChild('Plat');
-            $nouveauPlat->addChild('Nom', $plat['nom']);
-            $nouveauPlat->addChild('Type', $plat['type']);
-            $nouveauPlat->addChild('Prix', $plat['prix']);
-            $nouveauPlat->addChild('Description', $plat['description']);
+        if (isset($_POST['plats'])) {
+            foreach ($_POST['plats'] as $index => $plat) {
+                // Ajouter un nouveau plat
+                $nouveauPlat = $restaurant_to_update->Carte->addChild('Plat');
+                $nouveauPlat->addChild('Nom', htmlspecialchars($plat['nom']));
+                $nouveauPlat->addChild('Type', htmlspecialchars($plat['type']));
+                $nouveauPlat->addChild('Prix', htmlspecialchars($plat['prix']));
+                $nouveauPlat->addChild('Description', htmlspecialchars($plat['description']));
+            }
         }
 
         // Sauvegarder les modifications dans le fichier XML
@@ -107,7 +110,7 @@ if (isset($_POST['restaurant_id'])) {
             font-weight: bold;
         }
 
-        input[type="text"] {
+        input[type="text"], textarea, select {
             width: 100%;
             padding: 8px;
             margin-bottom: 10px;
@@ -152,74 +155,73 @@ if (isset($_POST['restaurant_id'])) {
         <h2>Modifier un restaurant</h2>
         <form method="post" action="">
             <input type="hidden" name="update_restaurant" value="1">
-            <input type="hidden" name="restaurant_id" value="<?php echo $restaurant_to_update['id']; ?>">
+            <input type="hidden" name="restaurant_id" value="<?php echo htmlspecialchars($restaurant_to_update['id']); ?>">
             <label for="nom">Nom:</label>
-            <input type="text" id="nom" name="nom" value="<?php echo $restaurant_to_update->Nom; ?>" required>
+            <input type="text" id="nom" name="nom" value="<?php echo htmlspecialchars($restaurant_to_update->Nom); ?>" required>
             <label for="adresse">Adresse:</label>
-            <input type="text" id="adresse" name="adresse" value="<?php echo $restaurant_to_update->Adresse; ?>" required>
+            <input type="text" id="adresse" name="adresse" value="<?php echo htmlspecialchars($restaurant_to_update->Adresse); ?>" required>
             <label for="restaurateur">Restaurateur:</label>
-            <input type="text" id="restaurateur" name="restaurateur" value="<?php echo $restaurant_to_update->Restaurateur; ?>" required>
+            <input type="text" id="restaurateur" name="restaurateur" value="<?php echo htmlspecialchars($restaurant_to_update->Restaurateur); ?>" required>
             <label for="specialite">Spécialité:</label>
-            <input type="text" id="specialite" name="specialite" value="<?php echo $restaurant_to_update->Description->Paragraphe->Important; ?>" required>
+            <input type="text" id="specialite" name="specialite" value="<?php echo htmlspecialchars($restaurant_to_update->Description->Paragraphe->Important); ?>" required>
             <label for="caracteristiques">Caractéristiques (séparées par des virgules):</label>
-            <input type="text" id="caracteristiques" name="caracteristiques" value="<?php echo implode(', ', iterator_to_array($restaurant_to_update->Description->Paragraphe->Liste->Item)); ?>" required>
+            <input type="text" id="caracteristiques" name="caracteristiques" value="<?php echo htmlspecialchars(implode(', ', iterator_to_array($restaurant_to_update->Description->Paragraphe->Liste->Item))); ?>" required>
             <label for="image_url">URL de l'image:</label>
-            <input type="text" id="image_url" name="image_url" value="<?php echo isset($restaurant_to_update->Description->Paragraphe->Image) ? $restaurant_to_update->Description->Paragraphe->Image['url'] : ''; ?>">
+            <input type="text" id="image_url" name="image_url" value="<?php echo isset($restaurant_to_update->Description->Paragraphe->Image) ? htmlspecialchars($restaurant_to_update->Description->Paragraphe->Image['url']) : ''; ?>">
             <label for="description">Description:</label>
-            <textarea id="description" name="description" required><?php echo $restaurant_to_update->Description->Paragraphe->Texte; ?></textarea>
+            <textarea id="description" name="description" required><?php echo htmlspecialchars($restaurant_to_update->Description->Paragraphe->Texte); ?></textarea>
             <h4>Carte des plats</h4>
             <div id="plats">
-                <?php foreach ($restaurant_to_update->Carte->Plat as $index => $plat) { ?>
+                <?php foreach ($restaurant_to_update->Carte->Plat as $plat) { ?>
                     <div>
-                        <h4>Plat <?php echo $index + 1; ?></h4>
+                        <h4>Plat</h4>
                         <label>Nom:</label>
-                        <input type="text" name="plats[<?php echo $index; ?>][nom]" value="<?php echo $plat->Nom; ?>" required>
+                        <input type="text" name="plats[][nom]" value="<?php echo htmlspecialchars($plat->Nom); ?>" required>
                         <label>Type de plat:</label>
-                        <select name="plats[<?php echo $index; ?>][type]" required>
+                        <select name="plats[][type]" required>
                             <option value="entree" <?php echo ($plat->Type == 'entree') ? 'selected' : ''; ?>>Entrée</option>
                             <option value="plat" <?php echo ($plat->Type == 'plat') ? 'selected' : ''; ?>>Plat</option>
                             <option value="dessert" <?php echo ($plat->Type == 'dessert') ? 'selected' : ''; ?>>Dessert</option>
                             <option value="fromage" <?php echo ($plat->Type == 'fromage') ? 'selected' : ''; ?>>Fromage</option>
                         </select>
                         <label>Prix:</label>
-                        <input type="text" name="plats[<?php echo $index; ?>][prix]" value="<?php echo $plat->Prix; ?>" required>
+                        <input type="text" name="plats[][prix]" value="<?php echo htmlspecialchars($plat->Prix); ?>" required>
                         <label>Description:</label>
-                        <textarea name="plats[<?php echo $index; ?>][description]" required><?php echo $plat->Description; ?></textarea>
+                        <textarea name="plats[][description]" required><?php echo htmlspecialchars($plat->Description); ?></textarea>
                     </div>
                 <?php } ?>
             </div>
             <button type="button" onclick="ajouterPlat()">Ajouter un plat</button>
             <br>
-            <button type="submit">Mettre à jour le restaurant</button>
+            <button type="submit">Mettre à jour</button>
         </form>
-
-        <script>
-            function ajouterPlat() {
-                var divPlats = document.getElementById('plats');
-                var numPlat = divPlats.querySelectorAll('div').length + 1;
-
-                var html = `
-                    <div>
-                        <h4>Plat ${numPlat}</h4>
-                        <label>Nom:</label>
-                        <input type="text" name="plats[${numPlat - 1}][nom]" required>
-                        <label>Type de plat:</label>
-                        <select name="plats[${numPlat - 1}][type]" required>
-                            <option value="entree">Entrée</option>
-                            <option value="plat">Plat</option>
-                            <option value="dessert">Dessert</option>
-                            <option value="fromage">Fromage</option>
-                        </select>
-                        <label>Prix:</label>
-                        <input type="text" name="plats[${numPlat - 1}][prix]" required>
-                        <label>Description:</label>
-                        <textarea name="plats[${numPlat - 1}][description]" required></textarea>
-                    </div>
-                `;
-
-                divPlats.innerHTML += html;
-            }
-        </script>
     </div>
+
+    <script>
+        function ajouterPlat() {
+            var divPlats = document.getElementById('plats');
+            var numPlat = divPlats.querySelectorAll('div').length + 1;
+
+            var html = `
+                <div>
+                    <h4>Plat ${numPlat}</h4>
+                    <label>Nom:</label>
+                    <input type="text" name="plats[${numPlat - 1}][nom]" required>
+                    <label>Type de plat:</label>
+                    <select name="plats[${numPlat - 1}][type]" required>
+                        <option value="entree">Entrée</option>
+                        <option value="plat">Plat</option>
+                        <option value="dessert">Dessert</option>
+                        <option value="fromage">Fromage</option>
+                    </select>
+                    <label>Prix:</label>
+                    <input type="text" name="plats[${numPlat - 1}][prix]" required>
+                    <label>Description:</label>
+                    <textarea name="plats[${numPlat - 1}][description]" required></textarea>
+                </div>
+            `;
+            divPlats.insertAdjacentHTML('beforeend', html);
+        }
+    </script>
 </body>
 </html>
