@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Restaurants SYSTEM "exo7.dtd">
-<Restaurants devise="EUR">
+<Restaurants devise="CFA">
     <Restaurant id="1">
         <Nom>Le Gourmet</Nom>
         <Adresse>123 Rue de la Paix, Paris</Adresse>
@@ -125,4 +125,4 @@
         </Menus>
     </Restaurant>
     
-<Restaurant><Nom>Brioche Dorée</Nom><Adresse>Maristes</Adresse><Restaurateur>Moussa Ndiaye</Restaurateur><Description><Paragraphe><Texte>test</Texte><Important>Fast Food</Important><Liste><Item>Familial</Item><Item>Chaleureux</Item></Liste><Image url="https://anaresto.com/wp-content/uploads/2017/04/briochedoree8-555x415.jpg"/></Paragraphe></Description><Carte><Plat><Nom>Burger</Nom><Type>plat</Type><Prix>1500</Prix><Description>Fast Food par excellence</Description></Plat></Carte></Restaurant></Restaurants>
+<Restaurant><Nom>Brioche Dorée</Nom><Adresse>Maristes</Adresse><Restaurateur>Moussa Ndiaye</Restaurateur><Description><Paragraphe><Texte>test</Texte><Important>Fast Food</Important><Liste><Item>Familial</Item><Item>Chaleureux</Item><Item>Délicieux</Item></Liste><Image url="https://anaresto.com/wp-content/uploads/2017/04/briochedoree8-555x415.jpg"/></Paragraphe></Description><Carte><Plat><Nom>Burger</Nom><Type>plat</Type><Prix>1500</Prix><Description>Fast Food par excellence</Description></Plat></Carte></Restaurant></Restaurants>

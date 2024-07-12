@@ -130,6 +130,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_restaurant'])) 
             cursor: pointer;
             width: 100px;
             text-align: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
 
         button:hover {

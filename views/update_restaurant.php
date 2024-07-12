@@ -176,6 +176,8 @@ if (isset($_POST['restaurant_id'])) {
             cursor: pointer;
             width: 110px;
             text-align: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
 
         button:hover {
@@ -255,9 +257,32 @@ if (isset($_POST['restaurant_id'])) {
                     <input type="text" name="plats[${numPlat - 1}][prix]" required>
                     <label>Description:</label>
                     <textarea name="plats[${numPlat - 1}][description]" required></textarea>
+                    <button type="button" onclick="supprimerPlat(this)">Supprimer Plat</button>
                 </div>
             `;
             divPlats.insertAdjacentHTML('beforeend', html);
+        }
+
+        function ajouterCaracteristique() {
+            var divCaracteristiques = document.getElementById('caracteristiques');
+            var numCaracteristique = divCaracteristiques.querySelectorAll('input').length + 1;
+
+            var html = `
+                <div>
+                    <label for="caracteristique_${numCaracteristique}"></label>
+                    <input type="text" id="caracteristique_${numCaracteristique}" name="caracteristiques[]" required><br>
+                    <button type="button" onclick="supprimerCaracteristique(this)">Supprimer Caracteristique</button><br>
+                </div>
+            `;
+            divCaracteristiques.insertAdjacentHTML('beforeend', html);
+        }
+
+        function supprimerCaracteristique(button) {
+            button.parentNode.remove();
+        }
+
+        function supprimerPlat(button) {
+            button.parentNode.remove();
         }
     </script>
 </body>
