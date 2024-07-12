@@ -63,15 +63,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_restaurant'])) {
 
 // Supprimer un restaurant
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_restaurant'])) {
-    foreach ($xml->Restaurant as $key => $restaurant) {
-        if ((string)$restaurant->Nom == $_POST['nom']) {
-            unset($xml->Restaurant[$key]);
+    $restaurantIndex = 0;
+    foreach ($xml->Restaurant as $restaurant) {
+        // Comparaison avec l'attribut 'id' du restaurant
+        if ((int)$restaurant['id'] == (int)$_POST['restaurant_id']) {
+            unset($xml->Restaurant[$restaurantIndex]);
 
             $dom = dom_import_simplexml($xml)->ownerDocument;
             $dom->formatOutput = true;
             $dom->save('../exo7.xml');
             break;
         }
+        $restaurantIndex++;
     }
 
     // Rediriger vers la page de gestion après la suppression
@@ -276,11 +279,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_restaurant'])) 
                     <td>
                     <form method="post" action="">
                         <input type="hidden" name="delete_restaurant" value="1">
-                        <input type="hidden" name="nom" value="<?php echo $restaurant->Nom; ?>">
+                        <input type="hidden" name="restaurant_id" value="<?php echo $restaurant['id']; ?>">
                         <button type="submit">Supprimer</button>
                     </form>
                     <form method="post" action="update_restaurant.php">
-                        <input type="hidden" name="nom" value="<?php echo $restaurant->Nom; ?>">
+                        <input type="hidden" name="restaurant_id" value="<?php echo $restaurant['id']; ?>">
                         <button type="submit">Modifier</button>
                     </form>
                     </td>
