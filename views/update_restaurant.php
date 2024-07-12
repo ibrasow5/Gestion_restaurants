@@ -9,77 +9,71 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 'admin') {
     exit();
 }
 
-// Charger le fichier XML
-$xml = simplexml_load_file('../exo2.xml');
-if (!$xml) {
-    die('Erreur lors du chargement du fichier XML.');
-}
+// Charger le fichier XML des restaurants
+$xml = simplexml_load_file('../exo7.xml');
 
-// Trouver le film à modifier par ID
-$filmToEdit = null;
-if (isset($_POST['film_id'])) {
-    $film_id = $_POST['film_id'];
-    $filmToEdit = $xml->xpath("//film[@id='$film_id']")[0];
-}
+// Récupérer l'ID du restaurant à modifier depuis POST
+if (isset($_POST['restaurant_id'])) {
+    $restaurant_id = (int)$_POST['restaurant_id'];
 
-// Si le formulaire de modification est soumis
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_film'])) {
-    // Vérifier si le film à modifier a été trouvé
-    if ($filmToEdit) {
-        // Mettre à jour les données du film
-        $filmToEdit->titre = $_POST['titre'];
-        $filmToEdit->duree = $_POST['duree'];
-        $filmToEdit->genre = $_POST['genre'];
-        $filmToEdit->realisateur = $_POST['realisateur'];
-        $filmToEdit->annee_production = $_POST['annee_production'];
-        $filmToEdit->langue = $_POST['langue'];
-        $filmToEdit->paragraphe = $_POST['paragraphe'];
-
-        // Vérifier et traiter l'upload de l'affiche
-        if ($_FILES['affiche']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = '../views/images/';
-            $uploadFile = $uploadDir . basename($_FILES['affiche']['name']);
-            if (move_uploaded_file($_FILES['affiche']['tmp_name'], $uploadFile)) {
-                $filmToEdit->affiche = '' . basename($_FILES['affiche']['name']);
-            } else {
-                echo "Erreur lors de l'upload du fichier.";
-            }
+    // Rechercher le restaurant correspondant dans XML
+    $restaurant_to_update = null;
+    foreach ($xml->Restaurant as $restaurant) {
+        if ((int)$restaurant['id'] == $restaurant_id) {
+            $restaurant_to_update = $restaurant;
+            break;
         }
-
-        // Gestion des horaires
-        $horairesNode = $filmToEdit->liste_horaires;
-        unset($horairesNode->horaires); // Supprimer les horaires existants
-        foreach ($_POST['horaires'] as $jour => $horaires) {
-            $horairesNodeJour = $horairesNode->addChild('horaires');
-            $horairesNodeJour->addChild('jour', $jour);
-            $horairesArray = [];
-            foreach ($horaires as $horaire) {
-                $heure = sprintf("%02d", $horaire['heure']) . ':' . sprintf("%02d", $horaire['minute']);
-                $horairesArray[] = $heure;
-            }
-            $horairesNodeJour->addChild('heure', implode('|', $horairesArray));
-        }
-
-
-
-        // Gestion des acteurs
-        $acteursNode = $filmToEdit->acteurs;
-        unset($acteursNode->acteur); // Supprimer les acteurs existants
-        foreach ($_POST['acteurs'] as $nomActeur) {
-            $acteurNode = $acteursNode->addChild('acteur');
-            $acteurNode->addChild('nom', $nomActeur);
-        }
-
-
-
-        $xml->asXML('../exo2.xml');
-
-        // Rediriger vers la page de gestion des films
-        header('Location: manage_films.php');
-        exit();
-    } else {
-        echo "Film non trouvé.";
     }
+
+    if (!$restaurant_to_update) {
+        die('Restaurant non trouvé.');
+    }
+
+    // Soumettre le formulaire de mise à jour
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_restaurant'])) {
+        // Mettre à jour les données du restaurant dans XML
+        $restaurant_to_update->Nom = $_POST['nom'];
+        $restaurant_to_update->Adresse = $_POST['adresse'];
+        $restaurant_to_update->Restaurateur = $_POST['restaurateur'];
+        $restaurant_to_update->Description->Paragraphe->Texte = $_POST['description'];
+        $restaurant_to_update->Description->Paragraphe->Important = $_POST['specialite'];
+
+        // Mettre à jour les caractéristiques
+        $caracteristiques = explode(',', $_POST['caracteristiques']);
+        $restaurant_to_update->Description->Paragraphe->Liste->Item = '';
+        foreach ($caracteristiques as $item) {
+            $restaurant_to_update->Description->Paragraphe->Liste->addChild('Item', trim($item));
+        }
+
+        // Mettre à jour l'image si elle est fournie
+        if (!empty($_POST['image_url'])) {
+            if (isset($restaurant_to_update->Description->Paragraphe->Image)) {
+                $restaurant_to_update->Description->Paragraphe->Image['url'] = $_POST['image_url'];
+            } else {
+                $image = $restaurant_to_update->Description->Paragraphe->addChild('Image');
+                $image->addAttribute('url', $_POST['image_url']);
+            }
+        }
+
+        // Mettre à jour la carte des plats
+        $restaurant_to_update->Carte->Plat = '';
+        foreach ($_POST['plats'] as $plat) {
+            $nouveauPlat = $restaurant_to_update->Carte->addChild('Plat');
+            $nouveauPlat->addChild('Nom', $plat['nom']);
+            $nouveauPlat->addChild('Type', $plat['type']);
+            $nouveauPlat->addChild('Prix', $plat['prix']);
+            $nouveauPlat->addChild('Description', $plat['description']);
+        }
+
+        // Sauvegarder les modifications dans le fichier XML
+        $xml->asXML('../exo7.xml');
+
+        // Rediriger vers la page de gestion après la mise à jour
+        header('Location: manage_restaurants.php');
+        exit();
+    }
+} else {
+    die('ID du restaurant non spécifié.');
 }
 ?>
 
@@ -87,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_film'])) {
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Modifier un film</title>
+    <title>Modifier un restaurant</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <style>
         .container {
@@ -113,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_film'])) {
             font-weight: bold;
         }
 
-        input[type="text"], textarea {
+        input[type="text"] {
             width: 100%;
             padding: 8px;
             margin-bottom: 10px;
@@ -121,8 +115,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_film'])) {
             border-radius: 4px;
         }
 
-        input[type="file"] {
-            margin-top: 10px;
+        .horaires {
+            margin-top: 20px;
+        }
+
+        .horaires label {
+            font-weight: bold;
+        }
+
+        .horaires input[type="text"] {
+            margin-right: 10px;
         }
 
         .edit {
@@ -143,142 +145,81 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_film'])) {
         button:hover {
             background-color: #0056b3;
         }
-
-        .horaires {
-            margin-top: 20px;
-        }
-
-        .horaires label {
-            font-weight: bold;
-        }
-
-        .horaires select {
-            margin-right: 10px;
-        }
-
-        .acteurs {
-            margin-top: 20px;
-        }
-
-        .acteurs .acteur {
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-
-        .acteurs .acteur input {
-            margin-right: 10px;
-        }
-
-        .acteurs .acteur button {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Modifier un film</h2>
-        <?php if ($filmToEdit) : ?>
-            <form method="post" action="" enctype="multipart/form-data">
-                <input type="hidden" name="film_id" value="<?php echo $filmToEdit['id']; ?>">
-                <input type="hidden" name="update_film" value="1">
-                
-                <!-- Champs pour les informations du film -->
-                <label for="titre">Titre:</label>
-                <input type="text" id="titre" name="titre" value="<?php echo $filmToEdit->titre; ?>" required>
-                
-                <label for="duree">Durée:</label>
-                <input type="text" id="duree" name="duree" value="<?php echo $filmToEdit->duree; ?>" required>
-                
-                <label for="genre">Genre:</label>
-                <input type="text" id="genre" name="genre" value="<?php echo $filmToEdit->genre; ?>" required>
-                
-                <label for="realisateur">Réalisateur:</label>
-                <input type="text" id="realisateur" name="realisateur" value="<?php echo $filmToEdit->realisateur; ?>" required>
-                
-                <!-- Gestion des acteurs -->
-                <div class="acteurs">
-                    <label for="acteurs">Acteurs:</label>
-                    <?php foreach ($filmToEdit->acteurs->acteur as $acteur) : ?>
-                        <div class="acteur">
-                            <input type="text" name="acteurs[]" value="<?php echo $acteur->nom; ?>" required>
-                            <button type="button" class="supprimer-acteur">Supprimer</button>
-                        </div>
-                    <?php endforeach; ?>
-                    <button type="button" id="ajouter-acteur">Ajouter acteur</button>
-                </div> 
+        <h2>Modifier un restaurant</h2>
+        <form method="post" action="">
+            <input type="hidden" name="update_restaurant" value="1">
+            <input type="hidden" name="restaurant_id" value="<?php echo $restaurant_to_update['id']; ?>">
+            <label for="nom">Nom:</label>
+            <input type="text" id="nom" name="nom" value="<?php echo $restaurant_to_update->Nom; ?>" required>
+            <label for="adresse">Adresse:</label>
+            <input type="text" id="adresse" name="adresse" value="<?php echo $restaurant_to_update->Adresse; ?>" required>
+            <label for="restaurateur">Restaurateur:</label>
+            <input type="text" id="restaurateur" name="restaurateur" value="<?php echo $restaurant_to_update->Restaurateur; ?>" required>
+            <label for="specialite">Spécialité:</label>
+            <input type="text" id="specialite" name="specialite" value="<?php echo $restaurant_to_update->Description->Paragraphe->Important; ?>" required>
+            <label for="caracteristiques">Caractéristiques (séparées par des virgules):</label>
+            <input type="text" id="caracteristiques" name="caracteristiques" value="<?php echo implode(', ', iterator_to_array($restaurant_to_update->Description->Paragraphe->Liste->Item)); ?>" required>
+            <label for="image_url">URL de l'image:</label>
+            <input type="text" id="image_url" name="image_url" value="<?php echo isset($restaurant_to_update->Description->Paragraphe->Image) ? $restaurant_to_update->Description->Paragraphe->Image['url'] : ''; ?>">
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required><?php echo $restaurant_to_update->Description->Paragraphe->Texte; ?></textarea>
+            <h4>Carte des plats</h4>
+            <div id="plats">
+                <?php foreach ($restaurant_to_update->Carte->Plat as $index => $plat) { ?>
+                    <div>
+                        <h4>Plat <?php echo $index + 1; ?></h4>
+                        <label>Nom:</label>
+                        <input type="text" name="plats[<?php echo $index; ?>][nom]" value="<?php echo $plat->Nom; ?>" required>
+                        <label>Type de plat:</label>
+                        <select name="plats[<?php echo $index; ?>][type]" required>
+                            <option value="entree" <?php echo ($plat->Type == 'entree') ? 'selected' : ''; ?>>Entrée</option>
+                            <option value="plat" <?php echo ($plat->Type == 'plat') ? 'selected' : ''; ?>>Plat</option>
+                            <option value="dessert" <?php echo ($plat->Type == 'dessert') ? 'selected' : ''; ?>>Dessert</option>
+                            <option value="fromage" <?php echo ($plat->Type == 'fromage') ? 'selected' : ''; ?>>Fromage</option>
+                        </select>
+                        <label>Prix:</label>
+                        <input type="text" name="plats[<?php echo $index; ?>][prix]" value="<?php echo $plat->Prix; ?>" required>
+                        <label>Description:</label>
+                        <textarea name="plats[<?php echo $index; ?>][description]" required><?php echo $plat->Description; ?></textarea>
+                    </div>
+                <?php } ?>
+            </div>
+            <button type="button" onclick="ajouterPlat()">Ajouter un plat</button>
+            <br>
+            <button type="submit">Mettre à jour le restaurant</button>
+        </form>
 
-                <label for="annee_production">Année de production:</label>
-                <input type="text" id="annee_production" name="annee_production" value="<?php echo $filmToEdit->annee_production; ?>" required>
-                
-                <label for="langue">Langue:</label>
-                <input type="text" id="langue" name="langue" value="<?php echo $filmToEdit->langue; ?>" required>
-                
-                <label for="paragraphe">Description:</label>
-                <textarea id="paragraphe" name="paragraphe" rows="4" required><?php echo $filmToEdit->paragraphe; ?></textarea>
-                
-                <!-- Gestion des horaires -->
-                <div class="horaires">
-                    <label for="horaires">Horaires:</label>
-                    <?php foreach ($filmToEdit->liste_horaires->horaires as $horaire) : ?>
-                        <label><?php echo $horaire->jour; ?>:</label>
-                        <?php 
-                        $horaires = explode('|', $horaire->heure);
-                        foreach ($horaires as $index => $heure) :
-                            [$heures, $minutes] = explode(':', $heure);
-                        ?>
-                            <select name="horaires[<?php echo $horaire->jour; ?>][<?php echo $index; ?>][heure]" required>
-                                <?php for ($h = 0; $h < 24; $h++) : ?>
-                                    <option value="<?php printf("%02d", $h); ?>" <?php if ($heures == sprintf("%02d", $h)) echo 'selected'; ?>><?php printf("%02d", $h); ?></option>
-                                <?php endfor; ?>
-                            </select>
-                            :
-                            <select name="horaires[<?php echo $horaire->jour; ?>][<?php echo $index; ?>][minute]" required>
-                                <?php for ($m = 0; $m < 60; $m++) : ?>
-                                    <option value="<?php printf("%02d", $m); ?>" <?php if ($minutes == sprintf("%02d", $m)) echo 'selected'; ?>><?php printf("%02d", $m); ?></option>
-                                <?php endfor; ?>
-                            </select><br>
-                        <?php endforeach; ?>
-                    <?php endforeach; ?>
-                </div>
+        <script>
+            function ajouterPlat() {
+                var divPlats = document.getElementById('plats');
+                var numPlat = divPlats.querySelectorAll('div').length + 1;
 
-                <label for="affiche">Affiche:</label>
-                <input type="file" id="affiche" name="affiche">
-                <?php if ($filmToEdit->affiche) : ?>
-                    <img src="../views/images/<?php echo $filmToEdit->affiche; ?>" alt="Affiche du film" style="width: 20%; height: auto;">
-                <?php endif; ?>
-                
-                <div class="edit">
-                    <button type="submit">Modifier le film</button>
-                </div>                     
-            </form>
-        <?php else : ?>
-            <p>Film non trouvé.</p>
-        <?php endif; ?>
+                var html = `
+                    <div>
+                        <h4>Plat ${numPlat}</h4>
+                        <label>Nom:</label>
+                        <input type="text" name="plats[${numPlat - 1}][nom]" required>
+                        <label>Type de plat:</label>
+                        <select name="plats[${numPlat - 1}][type]" required>
+                            <option value="entree">Entrée</option>
+                            <option value="plat">Plat</option>
+                            <option value="dessert">Dessert</option>
+                            <option value="fromage">Fromage</option>
+                        </select>
+                        <label>Prix:</label>
+                        <input type="text" name="plats[${numPlat - 1}][prix]" required>
+                        <label>Description:</label>
+                        <textarea name="plats[${numPlat - 1}][description]" required></textarea>
+                    </div>
+                `;
+
+                divPlats.innerHTML += html;
+            }
+        </script>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('ajouter-acteur').addEventListener('click', function() {
-                var acteursDiv = document.querySelector('.acteurs');
-                var divActeur = document.createElement('div');
-                divActeur.className = 'acteur';
-                divActeur.innerHTML = '<input type="text" name="acteurs[]" required><button type="button" class="supprimer-acteur">Supprimer</button>';
-                acteursDiv.insertBefore(divActeur, document.getElementById('ajouter-acteur'));
-            });
-
-            document.querySelector('.acteurs').addEventListener('click', function(event) {
-                if (event.target.classList.contains('supprimer-acteur')) {
-                    event.target.parentNode.remove();
-                }
-            });
-        });
-    </script>
 </body>
 </html>
-
