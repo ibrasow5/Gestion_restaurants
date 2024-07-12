@@ -38,12 +38,30 @@ if (isset($_POST['restaurant_id'])) {
         $restaurant_to_update->Description->Paragraphe->Texte = $_POST['description'];
         $restaurant_to_update->Description->Paragraphe->Important = $_POST['specialite'];
 
-        // Mettre à jour les caractéristiques
-        $caracteristiques = explode(',', $_POST['caracteristiques']);
-        $restaurant_to_update->Description->Paragraphe->Liste->Item = '';
-        foreach ($caracteristiques as $item) {
-            $restaurant_to_update->Description->Paragraphe->Liste->addChild('Item', trim($item));
+       // Récupérer les caractéristiques actuelles
+        $paragrapheListe = $restaurant_to_update->Description->Paragraphe->Liste;
+
+        // Créer un tableau pour les nouvelles caractéristiques
+        $newCaracteristiques = $_POST['caracteristiques'];
+        $newCaracteristiques = array_map('trim', $newCaracteristiques); // Nettoyer les espaces autour des entrées
+
+        // Ajouter les nouvelles caractéristiques si elles n'existent pas déjà
+        foreach ($newCaracteristiques as $item) {
+            $existing = false;
+            foreach ($paragrapheListe->Item as $existingItem) {
+                if (trim((string)$existingItem) === trim($item)) {
+                    $existing = true;
+                    break;
+                }
+            }
+            
+            if (!$existing && !empty($item)) {
+                $paragrapheListe->addChild('Item', htmlspecialchars($item));
+            }
         }
+
+        // Sauvegarder les modifications dans le fichier XML
+        $xml->asXML($xmlFile);
 
         // Mettre à jour l'image si elle est fournie
         if (!empty($_POST['image_url'])) {
@@ -156,7 +174,7 @@ if (isset($_POST['restaurant_id'])) {
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            width: 100px;
+            width: 110px;
             text-align: center;
         }
 
@@ -179,8 +197,13 @@ if (isset($_POST['restaurant_id'])) {
             <input type="text" id="restaurateur" name="restaurateur" value="<?php echo htmlspecialchars($restaurant_to_update->Restaurateur); ?>" required>
             <label for="specialite">Spécialité:</label>
             <input type="text" id="specialite" name="specialite" value="<?php echo htmlspecialchars($restaurant_to_update->Description->Paragraphe->Important); ?>" required>
-            <label for="caracteristiques">Caractéristiques (séparées par des virgules):</label>
-            <input type="text" id="caracteristiques" name="caracteristiques" value="<?php echo htmlspecialchars(implode(', ', iterator_to_array($restaurant_to_update->Description->Paragraphe->Liste->Item))); ?>" required>
+            <label>Caractéristiques:</label>
+            <div id="caracteristiques">
+                <?php foreach ($restaurant_to_update->Description->Paragraphe->Liste->Item as $index => $item) { ?>
+                    <input type="text" name="caracteristiques[]" value="<?php echo htmlspecialchars($item); ?>" required>
+                <?php } ?>
+            </div>
+            <button type="button" onclick="ajouterCaracteristique()">Ajouter une caractéristique</button>
             <label for="image_url">URL de l'image:</label>
             <input type="text" id="image_url" name="image_url" value="<?php echo isset($restaurant_to_update->Description->Paragraphe->Image) ? htmlspecialchars($restaurant_to_update->Description->Paragraphe->Image['url']) : ''; ?>">
             <label for="description">Description:</label>
