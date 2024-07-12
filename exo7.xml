@@ -26,7 +26,7 @@
             <Plat>
                 <Nom>Magret de Canard</Nom>
                 <Type>Plat</Type>
-                <Prix>35.00</Prix>
+                <Prix>25000</Prix>
                 <Description>Magret de canard grillé avec une sauce aux fruits rouges.</Description>
             </Plat>
         </Carte>
@@ -67,7 +67,7 @@
             <Plat>
                 <Nom>Lasagne</Nom>
                 <Type>Plat</Type>
-                <Prix>20.00</Prix>
+                <Prix>13000</Prix>
                 <Description>Lasagne traditionnelle à la bolognaise.</Description>
             </Plat>
         </Carte>
@@ -125,4 +125,4 @@
         </Menus>
     </Restaurant>
     
-<Restaurant><Nom>Brioche Dorée</Nom><Adresse>Maristes</Adresse><Restaurateur>Moussa Ndiaye</Restaurateur><Description><Paragraphe><Texte>test</Texte><Important>Fast Food</Important><Liste><Item>Familial</Item><Item>Chaleureux</Item><Item>Délicieux</Item></Liste><Image url="https://anaresto.com/wp-content/uploads/2017/04/briochedoree8-555x415.jpg"/></Paragraphe></Description><Carte><Plat><Nom>Burger</Nom><Type>plat</Type><Prix>1500</Prix><Description>Fast Food par excellence</Description></Plat></Carte></Restaurant></Restaurants>
+<Restaurant><Nom>Brioche Dorée</Nom><Adresse>Maristes</Adresse><Restaurateur>Moussa Ndiaye</Restaurateur><Description><Paragraphe><Texte>Test</Texte><Important>Fast Food</Important><Liste><Item>Familial</Item><Item>Chaleureux</Item></Liste><Image url="https://anaresto.com/wp-content/uploads/2017/04/briochedoree8-555x415.jpg"/></Paragraphe></Description><Carte><Plat><Nom>Burger</Nom><Type>Plat</Type><Prix>1500</Prix><Description>Fast Food par excellence</Description></Plat></Carte></Restaurant></Restaurants>

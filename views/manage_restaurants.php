@@ -195,10 +195,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_restaurant'])) 
             <h4>Carte des plats</h4>
             <label for="type_plat">Type de plat:</label>
             <select id="type_plat" name="plats[0][type]" required>
-                <option value="entree">Entrée</option>
-                <option value="plat">Plat</option>
-                <option value="dessert">Dessert</option>
-                <option value="fromage">Fromage</option>
+                <option value="Entree">Entrée</option>
+                <option value="Plat">Plat</option>
+                <option value="Dessert">Dessert</option>
+                <option value="Fromage">Fromage</option>
             </select>
             <div id="plats">
                 <div>

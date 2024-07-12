@@ -219,10 +219,10 @@ if (isset($_POST['restaurant_id'])) {
                         <input type="text" name="plats[<?php echo $index; ?>][nom]" value="<?php echo htmlspecialchars($plat->Nom); ?>" required>
                         <label>Type de plat:</label>
                         <select name="plats[<?php echo $index; ?>][type]" required>
-                            <option value="entree" <?php if ($plat->Type == 'entree') echo 'selected'; ?>>Entrée</option>
-                            <option value="plat" <?php if ($plat->Type == 'plat') echo 'selected'; ?>>Plat</option>
-                            <option value="dessert" <?php if ($plat->Type == 'dessert') echo 'selected'; ?>>Dessert</option>
-                            <option value="fromage" <?php if ($plat->Type == 'fromage') echo 'selected'; ?>>Fromage</option>
+                            <option value="Entrée" <?php if ($plat->Type == 'Entrée') echo 'selected'; ?>>Entrée</option>
+                            <option value="Plat" <?php if ($plat->Type == 'Plat') echo 'selected'; ?>>Plat</option>
+                            <option value="Dessert" <?php if ($plat->Type == 'Dessert') echo 'selected'; ?>>Dessert</option>
+                            <option value="Fromage" <?php if ($plat->Type == 'Fromage') echo 'selected'; ?>>Fromage</option>
                         </select>
                         <label>Prix:</label>
                         <input type="text" name="plats[<?php echo $index; ?>][prix]" value="<?php echo htmlspecialchars($plat->Prix); ?>" required>
@@ -248,10 +248,10 @@ if (isset($_POST['restaurant_id'])) {
                     <input type="text" name="plats[${numPlat - 1}][nom]" required>
                     <label>Type de plat:</label>
                     <select name="plats[${numPlat - 1}][type]" required>
-                        <option value="entree">Entrée</option>
-                        <option value="plat">Plat</option>
-                        <option value="dessert">Dessert</option>
-                        <option value="fromage">Fromage</option>
+                        <option value="Entrée">Entrée</option>
+                        <option value="Plat">Plat</option>
+                        <option value="Dessert">Dessert</option>
+                        <option value="Fromage">Fromage</option>
                     </select>
                     <label>Prix:</label>
                     <input type="text" name="plats[${numPlat - 1}][prix]" required>
