@@ -29,10 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_restaurant'])) {
 
     // Ajouter la spécialité
     $important = $paragraphe->addChild('Important');
-    $important->addChild('Texte', $_POST['specialite']);
 
     // Ajouter les caractéristiques
-    $paragraphe = $description->addChild('Paragraphe');
     $liste = $paragraphe->addChild('Liste');
     $caracteristiques = explode(',', $_POST['caracteristiques']);
     foreach ($caracteristiques as $item) {
@@ -276,11 +274,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_restaurant'])) 
                         <?php } ?>
                     </td>
                     <td>
-                        <form method="post" action="">
-                            <input type="hidden" name="delete_restaurant" value="1">
-                            <input type="hidden" name="nom" value="<?php echo $restaurant->Nom; ?>">
-                            <button type="submit">Supprimer</button>
-                        </form>
+                    <form method="post" action="">
+                        <input type="hidden" name="delete_restaurant" value="1">
+                        <input type="hidden" name="nom" value="<?php echo $restaurant->Nom; ?>">
+                        <button type="submit">Supprimer</button>
+                    </form>
+                    <form method="post" action="update_restaurant.php">
+                        <input type="hidden" name="nom" value="<?php echo $restaurant->Nom; ?>">
+                        <button type="submit">Modifier</button>
+                    </form>
                     </td>
                 </tr>
             <?php } ?>
