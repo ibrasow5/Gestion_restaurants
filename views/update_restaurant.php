@@ -58,13 +58,15 @@ if (isset($_POST['restaurant_id'])) {
         // Mettre à jour la carte des plats
         $restaurant_to_update->Carte->Plat = '';
         if (isset($_POST['plats'])) {
-            foreach ($_POST['plats'] as $index => $plat) {
-                // Ajouter un nouveau plat
-                $nouveauPlat = $restaurant_to_update->Carte->addChild('Plat');
-                $nouveauPlat->addChild('Nom', htmlspecialchars($plat['nom']));
-                $nouveauPlat->addChild('Type', htmlspecialchars($plat['type']));
-                $nouveauPlat->addChild('Prix', htmlspecialchars($plat['prix']));
-                $nouveauPlat->addChild('Description', htmlspecialchars($plat['description']));
+            foreach ($_POST['plats'] as $plat) {
+                if (!empty($plat['nom']) && !empty($plat['type']) && !empty($plat['prix']) && !empty($plat['description'])) {
+                    // Ajouter un nouveau plat
+                    $nouveauPlat = $restaurant_to_update->Carte->addChild('Plat');
+                    $nouveauPlat->addChild('Nom', htmlspecialchars($plat['nom']));
+                    $nouveauPlat->addChild('Type', htmlspecialchars($plat['type']));
+                    $nouveauPlat->addChild('Prix', htmlspecialchars($plat['prix']));
+                    $nouveauPlat->addChild('Description', htmlspecialchars($plat['description']));
+                }
             }
         }
 
@@ -172,28 +174,27 @@ if (isset($_POST['restaurant_id'])) {
             <textarea id="description" name="description" required><?php echo htmlspecialchars($restaurant_to_update->Description->Paragraphe->Texte); ?></textarea>
             <h4>Carte des plats</h4>
             <div id="plats">
-                <?php foreach ($restaurant_to_update->Carte->Plat as $plat) { ?>
+                <?php foreach ($restaurant_to_update->Carte->Plat as $index => $plat) { ?>
                     <div>
                         <h4>Plat</h4>
                         <label>Nom:</label>
-                        <input type="text" name="plats[][nom]" value="<?php echo htmlspecialchars($plat->Nom); ?>" required>
+                        <input type="text" name="plats[<?php echo $index; ?>][nom]" value="<?php echo htmlspecialchars($plat->Nom); ?>" required>
                         <label>Type de plat:</label>
-                        <select name="plats[][type]" required>
-                            <option value="entree" <?php echo ($plat->Type == 'entree') ? 'selected' : ''; ?>>Entrée</option>
-                            <option value="plat" <?php echo ($plat->Type == 'plat') ? 'selected' : ''; ?>>Plat</option>
-                            <option value="dessert" <?php echo ($plat->Type == 'dessert') ? 'selected' : ''; ?>>Dessert</option>
-                            <option value="fromage" <?php echo ($plat->Type == 'fromage') ? 'selected' : ''; ?>>Fromage</option>
+                        <select name="plats[<?php echo $index; ?>][type]" required>
+                            <option value="entree" <?php if ($plat->Type == 'entree') echo 'selected'; ?>>Entrée</option>
+                            <option value="plat" <?php if ($plat->Type == 'plat') echo 'selected'; ?>>Plat</option>
+                            <option value="dessert" <?php if ($plat->Type == 'dessert') echo 'selected'; ?>>Dessert</option>
+                            <option value="fromage" <?php if ($plat->Type == 'fromage') echo 'selected'; ?>>Fromage</option>
                         </select>
                         <label>Prix:</label>
-                        <input type="text" name="plats[][prix]" value="<?php echo htmlspecialchars($plat->Prix); ?>" required>
+                        <input type="text" name="plats[<?php echo $index; ?>][prix]" value="<?php echo htmlspecialchars($plat->Prix); ?>" required>
                         <label>Description:</label>
-                        <textarea name="plats[][description]" required><?php echo htmlspecialchars($plat->Description); ?></textarea>
+                        <textarea name="plats[<?php echo $index; ?>][description]" required><?php echo htmlspecialchars($plat->Description); ?></textarea>
                     </div>
                 <?php } ?>
             </div>
             <button type="button" onclick="ajouterPlat()">Ajouter un plat</button>
-            <br>
-            <button type="submit">Mettre à jour</button>
+            <button type="submit">Enregistrer</button>
         </form>
     </div>
 
