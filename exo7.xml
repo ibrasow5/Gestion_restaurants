@@ -20,7 +20,7 @@
             <Plat>
                 <Nom>Foie Gras</Nom>
                 <Type>Entrée</Type>
-                <Prix>25.50</Prix>
+                <Prix>15000</Prix>
                 <Description>Délicieux foie gras accompagné de toasts croustillants.</Description>
             </Plat>
             <Plat>
@@ -34,7 +34,7 @@
             <Menu>
                 <Titre>Menu Dégustation</Titre>
                 <Description>Un voyage gastronomique à travers nos spécialités.</Description>
-                <Prix>75.00</Prix>
+                <Prix>50000</Prix>
                 <Elements>
                     <Element>Foie Gras</Element>
                     <Element>Magret de Canard</Element>
@@ -61,7 +61,7 @@
             <Plat>
                 <Nom>Bruschetta</Nom>
                 <Type>Entrée</Type>
-                <Prix>10.00</Prix>
+                <Prix>6000</Prix>
                 <Description>Bruschetta avec tomates fraîches et basilic.</Description>
             </Plat>
             <Plat>
@@ -75,7 +75,7 @@
             <Menu>
                 <Titre>Menu Italien</Titre>
                 <Description>Profitez de nos meilleurs plats dans ce menu complet.</Description>
-                <Prix>40.00</Prix>
+                <Prix>25000</Prix>
                 <Elements>
                     <Element>Bruschetta</Element>
                     <Element>Lasagne</Element>
@@ -102,13 +102,13 @@
             <Plat>
                 <Nom>Sushi Assorti</Nom>
                 <Type>Plat</Type>
-                <Prix>30.00</Prix>
+                <Prix>20000</Prix>
                 <Description>Assortiment de sushis variés préparés par notre chef.</Description>
             </Plat>
             <Plat>
                 <Nom>Tempura</Nom>
                 <Type>Plat</Type>
-                <Prix>25.00</Prix>
+                <Prix>15000</Prix>
                 <Description>Tempura de crevettes et légumes frits.</Description>
             </Plat>
         </Carte>
@@ -116,7 +116,7 @@
             <Menu>
                 <Titre>Menu Zen</Titre>
                 <Description>Une sélection de nos meilleurs plats pour une expérience inoubliable.</Description>
-                <Prix>50.00</Prix>
+                <Prix>30000</Prix>
                 <Elements>
                     <Element>Sushi Assorti</Element>
                     <Element>Tempura</Element>
@@ -125,4 +125,4 @@
         </Menus>
     </Restaurant>
     
-<Restaurant><Nom>Brioche Dorée</Nom><Adresse>Maristes</Adresse><Restaurateur>Moussa Ndiaye</Restaurateur><Description><Paragraphe><Texte>Test</Texte><Important>Fast Food</Important><Liste><Item>Familial</Item><Item>Chaleureux</Item></Liste><Image url="https://anaresto.com/wp-content/uploads/2017/04/briochedoree8-555x415.jpg"/></Paragraphe></Description><Carte><Plat><Nom>Burger</Nom><Type>Plat</Type><Prix>1500</Prix><Description>Fast Food par excellence</Description></Plat></Carte></Restaurant></Restaurants>
+<Restaurant><Nom>Brioche Dorée</Nom><Adresse>Maristes</Adresse><Restaurateur>Moussa Ndiaye</Restaurateur><Description><Paragraphe><Texte>Test</Texte><Important>Fast Food</Important><Liste><Item>Familial</Item><Item>Chaleureux</Item></Liste><Image url="https://anaresto.com/wp-content/uploads/2017/04/briochedoree8-555x415.jpg"/></Paragraphe></Description><Carte><Plat><Nom>Burger</Nom><Type>Plat</Type><Prix>1500</Prix><Description>Fast Food par excellence</Description></Plat></Carte></Restaurant><Carte><Plat/></Carte></Restaurants>

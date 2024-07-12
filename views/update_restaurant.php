@@ -75,6 +75,9 @@ if (isset($_POST['restaurant_id'])) {
 
         // Mettre à jour la carte des plats
         if (isset($_POST['plats'])) {
+            // Réinitialiser l'index des plats pour assurer la correspondance avec le formulaire
+            $xml->Carte->Plat = null;
+
             foreach ($_POST['plats'] as $plat) {
                 // Vérifier si un plat avec le même nom existe déjà
                 $existingPlat = null;
@@ -84,14 +87,14 @@ if (isset($_POST['restaurant_id'])) {
                         break;
                     }
                 }
-        
+
                 if ($existingPlat) {
-                    // Mettre à jour le plat existant plutôt que d'en créer un nouveau
+                    // Mettre à jour le plat existant
                     $existingPlat->Type = htmlspecialchars($plat['type']);
                     $existingPlat->Prix = htmlspecialchars($plat['prix']);
                     $existingPlat->Description = htmlspecialchars($plat['description']);
                 } else {
-                    // Ajouter un nouveau plat seulement s'il n'existe pas déjà
+                    // Ajouter un nouveau plat
                     $nouveauPlat = $restaurant_to_update->Carte->addChild('Plat');
                     $nouveauPlat->addChild('Nom', htmlspecialchars($plat['nom']));
                     $nouveauPlat->addChild('Type', htmlspecialchars($plat['type']));
